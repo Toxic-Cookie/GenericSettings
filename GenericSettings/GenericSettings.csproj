@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ModNameGoesHere</RootNamespace>
-    <AssemblyName>ModNameGoesHere</AssemblyName>
+    <RootNamespace>GenericSettings</RootNamespace>
+    <AssemblyName>GenericSettings</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -32,11 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.1.1\lib\net45\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\NeosVR\Libraries\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="BaseX">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\NeosVR\Neos_Data\Managed\BaseX.dll</HintPath>
+    </Reference>
+    <Reference Include="CloudX.Shared">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\NeosVR\Neos_Data\Managed\CloudX.Shared.dll</HintPath>
     </Reference>
     <Reference Include="FrooxEngine">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\NeosVR\Neos_Data\Managed\FrooxEngine.dll</HintPath>
@@ -44,14 +47,22 @@
     <Reference Include="NeosModLoader">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\NeosVR\Libraries\NeosModLoader.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\NeosVR\Neos_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModNameGoesHere.cs" />
+    <Compile Include="GenericSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Setting.cs" />
+    <Compile Include="SettingsManager.cs" />
+    <Compile Include="SettingsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)\$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\NeosVR\nml_mods\"</PostBuildEvent>
