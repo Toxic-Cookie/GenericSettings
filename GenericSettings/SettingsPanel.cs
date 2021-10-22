@@ -38,6 +38,11 @@ namespace NeosTweaks.Settings
         /// </summary>
         public List<FieldInfo> RawSettings { get; }
 
+        /// <summary>
+        /// A centralized list of every settings panel currently being used.
+        /// </summary>
+        public static readonly List<SettingsPanel> SettingsPanels = new List<SettingsPanel>();
+
         public SettingsPanel()
         {
             Settings = new List<Setting>();
@@ -63,10 +68,19 @@ namespace NeosTweaks.Settings
             {
                 LoadSettings();
             }
-            catch (Exception e)
+            catch (Exception LoadingException)
             {
-                SaveSettings();
+                try
+                {
+                    SaveSettings();
+                }
+                catch (Exception SavingException)
+                {
+
+                }
             }
+
+            SettingsPanels.Add(this);
         }
 
         /// <summary>
@@ -84,6 +98,22 @@ namespace NeosTweaks.Settings
             }
 
             Engine.Current.Cloud.WriteVariable(CloudVariableDirectory, JsonConvert.SerializeObject(SerializableSettings));
+
+            return SerializableSettings;
+        }
+        /// <summary>
+        /// Converts Settings to a simplified dictionary and returns it.
+        /// </summary>
+        public Dictionary<string, object> GetSettings()
+        {
+            Dictionary<string, object> SerializableSettings = new Dictionary<string, object>();
+
+            foreach (FieldInfo fieldInfo in RawSettings)
+            {
+                Setting setting = (Setting)fieldInfo.GetValue(this);
+
+                SerializableSettings.Add(fieldInfo.Name, setting.Value);
+            }
 
             return SerializableSettings;
         }
