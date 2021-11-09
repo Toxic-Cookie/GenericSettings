@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
@@ -43,6 +44,18 @@ namespace NeosTweaks.Settings
         /// </summary>
         public static readonly List<SettingsPanel> SettingsPanels = new List<SettingsPanel>();
 
+        static SettingsPanel()
+        {
+            IEnumerable<Type> AssemblySettingsPanels = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assemblies => assemblies.GetTypes());
+
+            foreach (Type SettingsPanelType in AppDomain.CurrentDomain.GetAssemblies().
+                SelectMany(assemblies => assemblies.GetTypes()).OrderBy(o => o.Name).
+                Where(assembly => assembly.IsSubclassOf(typeof(SettingsPanel))))
+            {
+                SettingsPanels.Add((SettingsPanel)Activator.CreateInstance(SettingsPanelType));
+            }
+        }
+
         public SettingsPanel()
         {
             Settings = new List<Setting>();
@@ -68,19 +81,16 @@ namespace NeosTweaks.Settings
             {
                 LoadSettings();
             }
-            catch (Exception LoadingException)
+            catch
             {
                 try
                 {
                     SaveSettings();
                 }
-                catch (Exception SavingException)
+                catch
                 {
-
                 }
             }
-
-            SettingsPanels.Add(this);
         }
 
         /// <summary>
@@ -214,6 +224,70 @@ namespace NeosTweaks.Settings
             }
 
             return null;
+        }
+        /// <summary>
+        /// Retrieves a setting by its nice name from the current list.
+        /// </summary>
+        public static Setting GetSettingByName<T>(string Name) where T : SettingsPanel
+        {
+            foreach (SettingsPanel settingsPanel in SettingsPanels)
+            {
+                if (settingsPanel is T)
+                {
+                    foreach (Setting setting in settingsPanel.Settings)
+                    {
+                        if (setting.Name == Name)
+                        {
+                            return setting;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+        /// <summary>
+        /// Retrieves a setting by its literal name from the current list.
+        /// </summary>
+        public static Setting GetSettingByLiteralName<T>(string Name) where T : SettingsPanel
+        {
+            foreach (SettingsPanel settingsPanel in SettingsPanels)
+            {
+                if (settingsPanel is T)
+                {
+                    foreach (FieldInfo fieldInfo in settingsPanel.RawSettings)
+                    {
+                        if (fieldInfo.Name == Name)
+                        {
+                            return (Setting)fieldInfo.GetValue(settingsPanel);
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public void SaveSettings_FieldHandler(IField field)
+        {
+            if ((bool)field.BoxedValue)
+            {
+                SaveSettings();
+            }
+        }
+        public void LoadSettings_FieldHandler(IField field)
+        {
+            if ((bool)field.BoxedValue)
+            {
+                LoadSettings();
+            }
+        }
+        public void RefreshSettings_FieldHandler(IField field)
+        {
+            if ((bool)field.BoxedValue)
+            {
+                OnRefreshSettings();
+            }
         }
     }
 }

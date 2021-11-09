@@ -58,6 +58,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)\$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\NeosVR\nml_mods\"</PostBuildEvent>
+    <PostBuildEvent>start /w /d "C:\Program Files (x86)\Steam\steamapps\common\NeosVR\AutoPostX" AutoPostX.exe "C:\Users\Giovanni\source\repos\GenericSettings\GenericSettings\bin\Debug\GenericSettings.dll"
+copy "$(TargetDir)$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\NeosVR\Libraries"</PostBuildEvent>
   </PropertyGroup>
 </Project>
